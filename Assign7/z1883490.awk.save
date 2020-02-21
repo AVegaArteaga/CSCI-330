@@ -1,0 +1,18 @@
+BEGIN{
+	FS = ":" 
+	printf("%s %30s %10s\n", "Name", "Position", "Sales Amount")
+	print("==========================================\n")
+
+}
+
+
+{
+
+}
+
+
+END{
+
+
+
+}

@@ -1,0 +1,63 @@
+#include <iostream>
+#include <unistd.h> //fork()
+
+#include <sys/types.h> //wait()
+#include <sys/wait.h>
+
+using namespace std; 
+
+int main() 
+{
+ cout << "Before pipe\n"; //
+ 
+ int pipefd[2], rs; // 
+ char buffer[256]; // setting variables
+ 
+ rs = pipe(pipefd);
+ 
+ //// Error Check ////
+ if (rs < 0) 
+	{
+		perror("pipe");
+		exit(EXIT_FAILURE);
+	}	
+ cout << "pipe created\n";
+ //// Error Check ////
+ 
+ // fork into 2 processes
+	
+	rs = fork();
+	
+//// Error Check ////
+	if(rs < 0) 
+	{
+	perror("fork");
+	exit(EXIT_FAILURE);
+	}
+//// Error Check ////
+ if(rs == 0) // Child process
+	{ 
+	  close(pipefd[1]);// close write end of pipe
+	  close(0);// close standard input             
+	  dup(pipefd[0]); // duplicate read end of pipe into standard input
+	  close(pipefd[0]); // close read end of pipe
+	  read(0, buffer, sizeof(buffer));// read from read end of pipe
+	  cout << "pipe contained: " << buffer << endl; 
+	}
+	
+ else // Parent process
+	{  
+	close(pipefd[0]);// close read end of pipe, 
+					// keep write end open
+	close(1);       //close standard output
+	dup(pipefd[1]); // duplicate write end of pipe into standard output
+	close(pipefd[1]); // close write end of pipe
+	write(1, "Hello", 6); // write to write end of pipe
+	wait(&rs);// wait for Child done
+	}
+ ////////////////////////////
+ 
+ 
+ 
+ 
+}

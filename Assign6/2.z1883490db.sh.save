@@ -1,0 +1,269 @@
+#!/bin/bash
+
+#CSCI 330, Assignment 6, Fall Semester
+#Abel Vega Arteaga
+#z1883490
+#Section 1 
+#November 18, 2019
+# 
+#Purpose: Your task for this assignment is to write a shell script that will allow its user to create, view, and modify a
+#simple text-based database that contains records about automobiles. The shell script must be implemented
+#with the Bourne shell syntax (use bash). You may use any features available in the version of bash found on
+#turing/hopper, as well as any UNIX command available there.
+
+
+
+
+#script shows user's active processes
+#We passed through dbname and param1
+new(){ # what is passing is the dbname and text of whatever it is inside
+	if [ -n "$title" ]; then #checks to see if the variable has something in it
+		echo "$title" > $dbname # title goes into this
+	else
+		echo "Untitled database "  > $dbname #if nothing is in it, it will be default name
+	fi
+	printf "File successfully created \n" #prints its succesful
+}
+add(){ 
+	#database file
+	#maker of the car
+	#model
+	#year
+	#color
+	#dbname makerCar modelCar yearCar colorCar	-These were passed
+	if [ -f $dbname ]; then #checks if its a file
+		if [ "$yearCar" -gt 1870 -a "$yearCar" -lt 2025 ]; then #checks the age
+			echo "$makerCar, $modelCar, $yearCar, $colorCar" >> $dbname # puts it into file
+			echo "Record had been successfully created!" #succeseed
+		else
+			echo "The year of the car is out of bounds, Please enter the year of the car correctly!!!" #if the year is too old or young
+		fi
+	else
+		echo "$dbname is not a file, please create it first!" #if the file isnt a file
+	fi		
+}
+
+show(){
+	#1) The filename of the database to show the record(s) from. Must be the filename of a readable file	
+	if [ -f $dbname -a -r $dbname ]; then #checks if the file is a file AND if it is readable
+		if   [ "$#" -eq 2 ]; then #if the number that were passed is two
+			cat $dbname #shows contents of the file
+		elif [ "$#" -eq 3 ]; then #if funtion was passed with 3 parN
+			sed -n 1p $dbname #spits out the title of the file
+			sed -n $(($singleNum+1))p $dbname #and it will show the line of data
+		elif [ "$#" -eq 4 ]; then #if the funtion was passed with 4 paranmete
+			sed -n 1p $dbname #shows the title
+			sed -n "$3,$4 p" $dbname #And shows the range of what you want to see
+		fi
+	else
+		echo "The file is not a file and/or readable, please look at the status of it" #if the file is not readable
+	fi
+}
+
+delete(){
+#1) The filename of the database to show the record(s) from. Must be the filename of a readable file	
+if [ -f $dbname -a -r $dbname ]; then #same thing, checks file and readability
+	if   [ "$#" -eq 2 ]; then		  # if pass with 2 Parm
+		sed -n 1p $dbname > temp	  # this line will save the title name, save it on tempfile, and moves the contents into the target file
+		mv temp $dbname
+		echo "content(s) in file has succesfully deleted" #echo out deleted
+	elif [ "$#" -eq 3 ]; then
+		sed -e $singleNum'd' $dbname > temp #the left side of > will output everything but the line specified, so we use the > temp and use the mv command to copy the contents into the file we are using
+		mv temp $dbname
+		echo "1 record deleted!"
+	elif [ "$#" -eq 4 ]; then #if 4 parementers were passed
+        sed -e $3,$4'd' $dbname > temp #same as single, output will go into temp and mv the contents into the file we are using
+        mv temp $1
+        echo "Deleted $(($4-$3+1)) records" #correctly says how many was deleted as it has "+1"
+	fi
+else
+	echo "The file is not a file and/or readable, please look at the status of it" #if file is not readable nor a file
+fi
+}
+
+funnyJoke(){
+	#this is just a joke, idk, I want to know if ya laugh at this lol
+	read -p "press enter"
+	read -p "-knock knock"
+	read -p "Who's there-"
+	read -p "-a cow goes"
+	read -p "A cow goes who?"
+	read -p "-No! A cow goes MOO!"	
+}
+#vv This is just extre stuff i want to put, not part of the assignment vv#
+help(){
+	echo "this is the syntax for part 2 of the assignment"
+	echo "# dbname - filename of database file use"
+	echo "# command - which of the funtions to call: new, add, show, delete"
+	echo "# param1  - first non-dbname parameter to whichever command function chosen"
+	echo "# ...     - placeholder for parameters between 1 and N"
+	echo "# paramN  - to whichever cammand funtion chosen"
+	printf "dbname command param1 param2 ... paramN\nor enter \"quit\" to exit the program or enter \"help\" for syntax: "
+	printf "\n\n"
+}
+menu(){
+	
+#This funtion only is used for menu and show the command options 
+printf "\n\n"	
+printf "Thank you for using z1883490 DataBase program 😍😝💩 \n\n"
+printf "Please enter (help) for more info\n"
+printf "or enter \"quit\" to exit the program or enter \"help\" for syntax:\n"
+printf "Menu to reshow the menu and joke if you want slap your knee with laughter"
+printf "============================\n"
+printf "============================\n"
+printf "=                          =\n"
+printf "= new)                     =\n"
+printf "= add)                     =\n"
+printf "= show)                    =\n"
+printf "= delete)                  =\n"
+printf "= help)                    =\n"
+printf "= menu)                    =\n"
+printf "= quit)                    =\n"
+printf "= joke)                    =\n"
+printf "=                          =\n"
+printf "============================\n"
+printf "============================\n"
+}
+
+Loop=1 #loop will go on forever
+if [ -z "$1" ]; then # Out of this entire program, this if statment is important. If $1 is empty, then it will go into the 1st part
+					 # if $1 is not like %prog [file] ....... then it means the user is putting the whole line into once rather than
+					 # using the menu
+	menu . #shows up the menu
+	until [[ $Loop == 0 ]]; do #forever loop
+		read -p "Please Enter a command: " command # ask the use for command
+		
+		#if the user uses quit/menu/help/joke, it will loop back, else it will go into further commands
+		if   [ "$command" = "quit"   ]; then #quit to quit
+			echo "quitting"
+			echo "thank you for using my program!!!"
+			exit
+		elif [ "$command" = "menu"   ]; then #reshow the menu
+			menu
+		elif [ "$command" = "help"    ]; then # ask for help to do the syntax of part two of the assignment
+			help
+		elif [ "$command" = "joke"    ]; then # le epic joke
+			funnyJoke
+		else
+			read -p "Please enter the file you will be using: " dbname # ask the user for the file you will be using
+			if   [ "$command" = "new"    ]; then #if new command, then it will ask the user for the title of the file, or leave it blank 
+				read -p "Please enter a label for the database file, else, leave it blank: " title
+				new dbname title
+			elif [ "$command" = "add"    ]; then #if add command, then program will ask the user fo maker,model,year,color
+				read -p "Enter the maker of the car for the record: " makerCar 
+				echo "added"
+				read -p "Enter the model of the car for the record: " modelCar
+				echo "added"
+				read -p "Enter the year of the car for the record. MUST be between 1870 and 2025: " yearCar
+				echo "added"
+				read -p "Enter the color of the car for the record: " colorCar
+				echo "added"				
+				add $dbname makerCar modelCar yearCar colorCar		#add function
+			elif [ "$command" = "show"   ]; then #if show, it will ask the user to show all, or single it will ask what line, or it will ask what range from low end to high end
+				read -p "Enter all/single/range to show the contents of the $dbname: " howMany
+						if   [ "$howMany" = "all" ]; then
+							show dbname howMany
+						elif [ "$howMany" = "single" ]; then
+							read -p "Enter the number line: " singleNum
+							show dbname howMany singleNum
+						elif [ "$howMany" = "range" ]; then
+							read -p "Enter the number lower number: " rangeLower
+							read -p "Enter the number upper number: " rangeUpper
+							
+							show $dbname $howMany $rangeLower $rangeUpper
+						fi
+			elif [ "$command" = "delete" ]; then #if show, it will ask the user to show all, or single it will ask what line, or it will ask what range from low end to high end
+				read -p "Are you sure that you want to delete lines of data from $dbname?: (Y|N)" YN # this is for sure if you want to delete 
+					if [[ $YN = "Y" || $YN = "y" ]]; then
+						read -p "Enter all/single/range to show the contents of the $dbname: " howMany
+						if   [ "$howMany" = "all" ]; then
+							delete dbname howMany
+						elif [ "$howMany" = "single" ]; then
+							read -p "Enter the number line: " singleNum
+							delete dbname howMany singleNum
+						elif [ "$howMany" = "range" ]; then
+							read -p "Enter the number lower number: " rangeLower
+							read -p "Enter the number upper number: " rangeUpper							
+							delete $dbname $howMany $rangeLower $rangeUpper
+						fi
+					fi			
+			else
+				printf "command: $command is not part of the command library,\n please enter a valid command \n\n" #if the command is wrong
+			fi
+		fi
+	done
+else
+	#This is for part 2 of the assignment
+	if   [ "$2" = "new" ]; then #if $2 is new, then $3 (which is parnmeters 1) will either be empty or has stuff in it 
+		dbname=$1
+		title=$3
+		new dbname title
+	elif [ "$2" = "add" ]; then #if $2 is add, then $3 $4 $5 $6
+		dbname=$1
+		makerCar=$3
+		modelCar=$4
+		yearCar=$5
+		colorCar=$6
+		if [ -z "$6" ]; then #if one of the parN is missing, then it will be error
+		echo "not enough parameters"
+		exit
+		fi
+		add dbname makerCar modelCar yearCar colorCar
+	elif [ "$2" = "show" ]; then 	# if $2 show, then it will ask if $3 is either all/single/range
+		if   [ "$#" -eq 3 -a "$3" = "all" ]; then
+			dbname=$1 #setting the variables to proper spot
+			howMany=$3 
+			show dbname howMany
+		elif [ "$#" -eq 4 -a "$3" = "single" ]; then
+			dbname=$1   #setting the variables to proper spots
+			howMany=$3 
+			singleNum=$4
+			if [ -z "$4" ]; then                # if the $4 is empty then error since single needs one
+				echo "not enough parameters"
+			fi
+			show dbname howMany singleNum
+		elif [ "$#" -eq 5 -a "$3" = "range" ]; then 
+			dbname=$1 # set variables to proper
+			howMany=$3 
+			rangeLower=$4
+			rangeUpper=$5
+			if [ -z "$5" ]; then #error if the $5 spot is empty
+				echo "not enough parameters"
+			fi
+			show $dbname $howMany $rangeLower $rangeUpper
+			
+		else
+			echo "not enough parameters" #if $2 is spelled wrong or $3 is empty
+		fi
+	elif [ "$2" = "delete" ]; then
+		if   [  "$#" -eq 3 -a "$3" = "all"  ]; then #if $2 is either all/single/range
+			dbname=$1 #setting variables
+			howMany=$3 
+			delete dbname howMany
+		elif [ "$#" -eq 4 -a "$3" = "single" ]; then
+			dbname=$1  #setting variables
+			howMany=$3 
+			singleNum=$4
+			if [ -z "$4" ]; then #if $4 is empty, then error
+				echo "not enough parameters"
+				echo "leaving database program"
+				exit
+			fi
+			delete dbname howMany singleNum
+		elif [ "$#" -eq 5 -a "$3" = "range" ]; then
+			dbname=$1  #setting variables
+			howMany=$3 
+			rangeLower=$4
+			rangeUpper=$5
+			if [ -z "$5" ]; then #if $5 is empty, then error
+				echo "not enough parameters"
+				echo "leaving database program"
+				exit
+			fi
+			delete $dbname $howMany $rangeLower $rangeUpper
+		else
+			echo "not enough parameters" #if $2 is spelled wrong or $3 is empty
+		fi
+	fi
+echo "leaving database program" #the end <3
+fi

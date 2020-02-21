@@ -1,0 +1,57 @@
+/*
+
+
+
+
+*/		
+
+if(rs == 0) // 1st Child process
+		{ 
+			  cout << "Hi mom from befor child stuff\n";
+			  close(pipefd[0]); // close read end of pipe, keep write end open
+			  //close(1);			// close standard output             
+			  dup(pipefd[1]);   // duplicate write end of pipe into standard output
+			  close(pipefd[1]); // close write end of pipe
+			  cout << "Hi mom from on execl\n";
+			  rs = execl("/bin/ls","ls", (char *) NULL); //run ls  
+			 
+			  ///Check Error///
+			 /*
+			  if (rs < 0) 
+			  {
+				perror("WC");
+				exit(EXIT_FAILURE);
+			  }
+			 */
+			  ///Check Error///
+			  cout << "Hi mom from ls\n"; // not working
+		}
+		else // Parent process
+		{  
+			close(pipefd[1]); //close write end of pipe, keep read open
+			//close(0);         //close standard input
+			dup(pipefd[0]);   //duplicate read end of pipe into standard input
+			close(pipefd[0]); //close write end of pipe
+			
+			   //testing around, i think this is right spot //Waiting for the child to end
+			rs = fork(); // since the child ends, we fork again to create 2 other proccess, ie parent and child
+			cout << "Hi mom from parent\n";
+		}
+		
+		///Command 2 will go into the 2nd child process
+		if(rs == 0) //child
+		{
+			
+			rs = execl("/usr/bin/wc", "wc", (char *) NULL); //The pipe will go into here and print out WC for the LS
+			if(rs==-1)
+			{
+				perror("ls");
+				exit(EXIT_FAILURE);
+			}
+		}
+		else //parent
+		{
+			wait(&rs); //wait for child
+			wait(&rs);
+		}
+		

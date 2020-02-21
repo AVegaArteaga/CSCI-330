@@ -1,0 +1,107 @@
+ # CSCI 330, Assignment 7, Fall Semester
+ # Abel Vega Arteaga
+ # z1883490
+ # Section 1
+ # December 2, 2019
+ # Purpose: You must write an awk script that will generate a report when supplied input data in a specified format
+ # 	Your awk script must compute summary data on the performance of sales associates for the company No-op Computing........"
+
+BEGIN{
+	FS = ":" # this is what we will be used to seperating the fieleds
+	print("\n\n\nThank you for using z1883490.awk program!!!\nHere are the outputs\n\nCompany: No-op Computing")
+}
+(NF == 4){ #if the fields have 4, then we will go into this 
+	if ($1 > max)
+	{
+	max = $1 #We would go into this loop unti all the proper 
+	Pid[$1] = $1
+	Name[$1] = $2
+	Position[$1] = $3
+	Sales_Amount[$1] = $4 
+	}
+}
+(NF == 3){
+	if ($1 > max2)
+	{
+	Amax = $1
+	Aid[$1] = $1
+	AName[$1] = $2
+	PPositon[$1] = $3 
+	}
+}
+
+(NF == 5){
+
+	if ($1 > Smax)
+	{
+	Smax = $1
+
+	Sid[$1] = $1
+	Tid[$1] = $2
+	quantity[$1] = $3
+	date[$1] = $4
+	assId[$1] = $5
+	}
+}
+
+
+END{
+	for(i = 1; i <= 7; i++)
+		{
+		for(j = i+1; j < 7; j++)
+			{
+			if(Sales_Amount[i] > Sales_Amount[j])
+				{
+					temp = Pid[i]
+					Pid[i]=Pid[j]
+					Pid[j]=temp
+			
+					temp=Name[i]
+					Name[i]=Name[j]
+					Name[j]=temp
+					
+					temp=Position[i]
+					Postition[i]=Position[j]
+					Position[j]=temp
+					
+					
+					temp=Sales_Amount[i]
+					Sales_Amount[i]=Sales_Amount[j]
+					Sales_Amount[j]=temp
+					
+				}
+			}
+		}
+
+	print("Products:")
+	print("[Product ID] = P-ID")
+        printf("%s %-13s %-30s %s\n", "P-ID" , "Name", "Position", "Sales Amount")
+        print("==============================================================")
+	for ( x = max; x > 0; x--)
+	{
+		printf("%4s %-13s %-30s %12.2f\n", Pid[x], Name[x], Position[x], Sales_Amount[x])
+	}
+	print("==============================================================")
+	print("")
+
+	print("Associates:")
+	print("[Associates ID] = A-ID")
+        printf("%s %-18s %10s\n","A-ID",  "Name", "Position")
+        print("=====================================")
+        for ( x = 1; x <= Amax; x++)
+        {
+        printf("%4s %-20s %s\n", Aid[x], AName[x], PPositon[x])
+        }
+        print("=====================================")
+	print("")
+
+	print("Sales:")
+	print("[Transaction ID] = T-ID\n[Product ID] = P-ID\n[Associate ID] = A-ID")
+	printf("%s %s %s %s %10s\n", "T-ID", "P-ID", "Quantity", "Date", "A-ID")
+        print("==================================")
+        for ( x = 1; x <= Smax; x++)
+        {
+        printf("%4s %4s %8s %s %4d\n", Tid[x], Sid[x], quantity[x], date[x], assId[x])
+        }
+        print("==================================")
+}

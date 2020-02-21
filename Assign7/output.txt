@@ -1,0 +1,63 @@
+
+
+
+Thank you for using z1883490.awk program!!!
+Here are the outputs
+
+Company: No-op Computing
+Products:
+[Product ID] = P-ID
+P-ID Name          Position                       Sales Amount
+==============================================================
+   4 vehicle       TARDIS                            999999.99
+   5 hardware      TARDIS                              9999.99
+   3 software      TARDIS                                59.99
+   1 software      Return to Gallifrey Video Game        55.00
+   6 merchandise   Word Processor                        20.00
+   2 software      Word Processor                        19.99
+==============================================================
+
+Associates:
+[Associates ID] = A-ID
+A-ID Name                 Position
+=====================================
+   1 Davy Jones           Security 
+   2 Ricky Davis          Developer 
+   3 Samantha Smith       Salesperson 
+   4 Matt Smith           Doctor 
+   5 David Tennant        Doctor 
+   6 Buckminster Fuller   Engineer 
+   7 Clara Oswald         Nurse 
+   8 Amelia Pond          Nurse
+=====================================
+
+Sales:
+[Transaction ID] = T-ID
+[Product ID] = P-ID
+[Associate ID] = A-ID
+T-ID P-ID Quantity Date       A-ID
+==================================
+   1    1        1 01/02/2015    2
+   2    2        1 02/04/2017    2
+   3    3        1 03/06/2018    5
+   4    4        1 11/05/2018    5
+   1    5        1 01/12/2018    2
+   2    6        2 02/11/2018    2
+   3    7        1 05/13/2018    6
+   6    8        3 06/24/2018    1
+   5    9        1 02/02/2016    5
+   1   10        1 05/01/2017    5
+   2   11        1 11/05/2018    5
+   3   12        1 12/06/2018    5
+   2   13        1 02/12/2018    5
+   1   14        1 10/16/2018    5
+   6   15        4 05/18/2018    3
+   5   16        1 06/28/2018    6
+   1   17        1 07/30/2018    5
+   2   18        1 08/04/2018    7
+   3   19        1 09/07/2018    5
+   6   20        1 10/17/2018    4
+   6   21        1 10/17/2018    8
+   2   22        1 08/04/2018    7
+   3   23        1 09/07/2018    5
+==================================

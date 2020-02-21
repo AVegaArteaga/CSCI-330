@@ -1,0 +1,74 @@
+ # CSCI 330, Assignment 7, Fall Semester
+ # Abel Vega Arteaga
+ # z1883490
+ # Section 1
+ # December 2, 2019
+ # Purpose: You must write an awk script that will generate a report when supplied input data in a specified format
+ # 	Your awk script must compute summary data on the performance of sales associates for the company “No-op Computing.”
+
+BEGIN{
+	FS = ":" # this is what we will be used to seperating the fieleds
+
+}
+(NF == 4){ #if the fields have 4, then we will go into this 
+	if ($1 > max)
+	{
+	max = $1
+	Pid[$1] = $1
+	Name[$1] = $2
+	Position[$1] = $3
+	Sales_Amount[$1] = $4
+	}
+}
+(NF == 3){
+	if ($1 > max2)
+	{
+	Amax = $1
+	Aid[$1] = $1
+	AName[$1] = $2
+	PPositon[$1] = $3
+	}
+}
+
+(NF == 5){
+
+	if ($1 > Smax)
+	{
+	Smax = $1
+
+	Sid[$1] = $1
+	Tid[$1] = $2
+	quantity[$1] = $3
+	date[$1] = $4
+	assId[$1] = $5
+	}
+}
+
+
+END{
+	print("Products")
+        printf("%s %-13s %-28s %s\n", "Product id" , "Name", "Position", "Sales Amount")
+        print("==================================================================")
+	for ( x = 1; x <= max; x++)
+	{
+		printf("%10s %-13s %-30s %10.2f\n", Pid[x], Name[x], Position[x], Sales_Amount[x])
+	}
+	print("")
+
+	print("Associates")
+        printf("%s %-18s %10s\n","Associates id",  "Name", "Position")
+        print("==============================================")
+        for ( x = 1; x <= Amax; x++)
+        {
+        printf("%13s %-20s %s\n", Aid[x], AName[x], PPositon[x])
+        }
+	print("")
+
+	print("Sales")
+	printf("%s %14s %10s %7s %20s\n", "Transaction id", "Product id", "quantity", "date", "associate id")
+        print("=====================================================================")
+        for ( x = 1; x <= Smax; x++)
+        {
+        printf("%14s %14s %10s %13s %14d\n", Tid[x], Sid[x], quantity[x], date[x], assId[x])
+        }
+}

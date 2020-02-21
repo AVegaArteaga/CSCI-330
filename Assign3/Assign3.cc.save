@@ -1,0 +1,135 @@
+#include <iostream>       //For standard input output
+#include <cstdio>       
+#include <cstdlib>
+
+using std::cout;
+using std::endl;
+/***********************************************************************
+ * CSCI 330, Assignment 3, Fall Semester
+ * Abel Vega Arteaga
+ * z1883490
+ * Section 1 
+ * September 27, 2019
+ * 
+ * Purpose: The purpose of this assignment is to provide practice using 
+ * the system calls we discussed for working with files on a UNIX system.
+ * You will br writing a basic implementation of the CAT command using C++
+***********************************************************************/
+
+
+
+	/*
+	 * 
+	 * a.) Your program must be able to handle any number of files, 
+	 * 	   which will have their filenames passed as
+     *     command line arguments.
+     * 
+	 * b.) No matter how long each file is, 
+	 * 	   your program must be able to read and output all of the data in contains
+	 * 
+	 * c.)All of the data must be displayed, 
+	 *    even if the file contains non-text data. 
+	 * 	  Notice that this means cout << will not be sufficient on its own
+	 * 
+	 * d.)The UNIX system calls that we spoke about in class must be used to implement the reading portion.
+	 * 	  They may be used for the writing portion as well, but this is not required.
+	 * 	  This means that the C++ file stream classes are not permitted 
+	 * 	  to be used for the file input. (Use open, read, close.)
+	 * 
+	 * e.) Make sure to clean up after you are done with each file, calling close on its file descriptor.
+	 * 
+	 * f.) If “-” (a single dash) on its own is specified as one of the files to read and output, 
+	 *     read the data from standard input instead. 
+	 *     Do not open a file called “-”.
+	 * 
+	 * g.) Make sure to properly document your code. 
+	 *     This includes a documentation box at the top of your program, 
+	 *     as well as before each function you write, 
+	 *     as ell as comments on the code that actually does the work, 
+	 *     in order to explain what is going on. If documentation is missing. 
+	 *     Your grade on the assignment will suffer.
+	 * 
+	 * h.) The program should compile properly with just g++ and no special flags on either turing or hopper.
+	 * 
+	 */
+#include <iostream>       
+#include <cstdio>       
+#include <cstdlib>
+#include <iostream>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdbool.h>
+
+
+using namespace std; 
+
+const int Count = 1024; // the numbr of bytes that the program would be read 
+string CheckDash = "-"; ///// For question f. to check if the file is a single dash.
+int main(int argc, char *argv[]) // argc counts how many were passed with the program
+							    // argv[] is the vector of argument
+	{
+		
+	char buffer[Count]; // size of the array of buffer
+		
+	
+		for(int i = 1; i < argc; i++)       //starts at one since ./a.out starts at 0 and we dont want to include that, so we start at one which will be the file(s).
+		{ 		    						// argc will be the max of how many agruments had passed
+			int fd = open(argv[i], O_RDONLY);  
+			cout << fd << endl;
+				if( argv[i] == CheckDash){
+					fd = 0;                              
+					cout << "This file is a dash" << endl; // I am not sure how to do the f question.
+					}    
+		                                      // open file(s) and prints an error if unable to do so		
+				if(fd == -1)                   // if fails to open, prints error
+				{
+					perror(argv[i]);		   // Prints an error if 
+					continue;                  // continue since we want to know if the other files are also having this error
+				}
+				if(fd != -1)                   // if he file is not -1, the this would say what file was open
+				{
+				cout << "Usage of file : " << argv[i] << endl; // shows what file the program is using
+				}
+
+ #include <sys/types.h>
+       #include <sys/stat.h>
+       #include <unistd.h>
+
+       int stat(const char *pathname, struct stat *buf);
+
+
+
+
+
+
+
+
+
+
+
+
+				
+		ssize_t howmany; // how many bytes that have been read
+			while ((howmany = read(fd, buffer, Count)) != 0)          //reads the file discriptor, buffer, and count(1024)
+				{
+					if (howmany == -1)                                             //checks if homany returns -1. if there is more data at the end of 1024, then it will keep looping until it hits 0
+						{
+							cerr << " return -1 : " << (argv[i]) << endl;
+							perror(argv[i]);
+							exit(1);
+						}
+					write(i, buffer, howmany); // prints out the argv[i]
+				} 
+			}
+		int close(int fd); // closes the file, as it is good practice
+		return 0;          // returns 0
+	}
+	
+	
+	
+		
+		
+		
+
